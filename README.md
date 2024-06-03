@@ -5,13 +5,13 @@ Web interface for Novi.
 ## Project Setup
 
 ```bash
-bun install
+bun i
 ```
 
 ### Compile and Hot-Reload for Development
 
 ```bash
-bun run dev
+bun dev
 ```
 
 ### Type-Check, Compile and Minify for Production
