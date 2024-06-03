@@ -1,0 +1,35 @@
+import { createNotivue } from 'notivue';
+import 'notivue/animations.css';
+import { createPinia } from 'pinia';
+
+import { createApp } from 'vue';
+
+import '@/assets/main.css';
+
+import App from './App.vue';
+import router from './router';
+import { useUIState } from './ui';
+
+const app = createApp(App);
+
+app
+  .use(createPinia())
+  .use(router)
+  .use(
+    createNotivue({
+      notifications: {
+        global: {
+          duration: 3000
+        }
+      }
+    })
+  );
+
+app.mount('#app');
+
+const ui = useUIState();
+router.beforeEach((_from, _to, next) => {
+  ui.pageLoading = true;
+  next();
+});
+router.afterEach(() => (ui.pageLoading = false));

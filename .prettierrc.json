@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json.schemastore.org/prettierrc",
+  "semi": true,
+  "tabWidth": 2,
+  "singleQuote": true,
+  "printWidth": 100,
+  "trailingComma": "none",
+  "plugins": ["prettier-plugin-tailwindcss", "@trivago/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "^vue(.*)$",
+    "^notivue$",
+    "^@/(object|ui|misc|model|pref|router)$",
+    "^@/page/(.*)$",
+    "^@/m$",
+    "^@/view/(.*)$",
+    "^@/section/(.*)$",
+    "^@mdi/js$",
+    "^@/assets/(.*)$",
+    "^\\./(.*)$"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
+}

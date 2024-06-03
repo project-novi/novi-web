@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.ripple-in {
+  animation: ripple-in 0.4s ease-out forwards;
+}
+@keyframes ripple-in {
+  0% {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.ripple-out {
+  animation: ripple-out 0.25s ease-out forwards;
+}
+@keyframes ripple-out {
+  to {
+    opacity: 0;
+  }
+}
+
+.can-click {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-enter-active {
+  transition-delay: 1s;
+  transition:
+    transform 0.5s ease,
+    opacity 0.5s ease;
+}
+.slide-leave-active {
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+.slide-enter-from {
+  transform: translateX(20px);
+  opacity: 0;
+}
+.slide-leave-to {
+  transform: translateX(-20px);
+  opacity: 0;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
