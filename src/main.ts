@@ -37,6 +37,9 @@ router.beforeEach((_from, _to, next) => {
 router.afterEach(() => (ui.pageLoading = false));
 
 const prefs = usePref();
-prefs.$subscribe(() => {
-  window.ipfsGateway = prefs.useCustomIpfs ? prefs.ipfsGateway : null;
-});
+prefs.$subscribe(
+  () => {
+    window.ipfsGateway = prefs.useCustomIpfs ? prefs.ipfsGateway : null;
+  },
+  { immediate: true }
+);
