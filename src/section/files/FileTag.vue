@@ -39,7 +39,7 @@ watch(
 <template>
   <a
     :href="url"
-    download
+    target="_blank"
     class="mb-2 mr-2 group inline-flex text-sm items-stretch"
     :title="variant"
   >
