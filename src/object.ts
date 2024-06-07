@@ -5,11 +5,6 @@ import { type IRawNoviObject, type IRawPartialNoviObject } from './model';
 
 const EXPIRE_TIME = 1000 * 30;
 
-export function objectUrl(id: string, ...prefs: string[]) {
-  if (!prefs.length) prefs.push('original');
-  return `/api/files/${id}/${prefs.join(',')}`;
-}
-
 export interface IPartialNoviObject extends IRawPartialNoviObject {
   tags: Record<string, string | null>;
 
@@ -64,7 +59,10 @@ export class NoviObject implements IPartialNoviObject {
   }
 
   url(...prefs: string[]) {
-    return objectUrl(this.id, ...prefs);
+    if (!prefs.length) prefs.push('original');
+    let url = `/api/files/${this.id}/${prefs.join(',')}`;
+    url += '?gateway=' + encodeURIComponent(String(window.ipfsGateway));
+    return url;
   }
 
   private saveLocal() {

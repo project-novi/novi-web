@@ -1,12 +1,14 @@
-import { createNotivue } from 'notivue';
 import 'notivue/animations.css';
 import { createPinia } from 'pinia';
 
-import { createApp } from 'vue';
+import { createApp, watch } from 'vue';
+
+import { createNotivue } from 'notivue';
 
 import '@/assets/main.css';
 
 import App from './App.vue';
+import { usePref } from './pref';
 import router from './router';
 import { useUIState } from './ui';
 
@@ -33,3 +35,10 @@ router.beforeEach((_from, _to, next) => {
   next();
 });
 router.afterEach(() => (ui.pageLoading = false));
+
+const prefs = usePref();
+watch(
+  () => prefs.ipfsGateway,
+  (v) => (window.ipfsGateway = v),
+  { immediate: true }
+);

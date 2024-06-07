@@ -1,19 +1,23 @@
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue';
+import { reactive, ref, watch } from 'vue';
+
 import { push } from 'notivue';
 
 import { RATING_MAP } from '@/misc';
-import { useUIState } from '@/ui';
 import { usePref } from '@/pref';
+import { useUIState } from '@/ui';
 
-import { MButton, MCheckbox, MSelect } from '@/m';
+import { MButton, MCheckbox, MInput, MSelect } from '@/m';
 
 import InputWithCheck from '@/view/InputWithCheck.vue';
+
+import { mdiAlphaEBox, mdiFanOff, mdiFilter } from '@mdi/js';
 
 import Item from './settings/Item.vue';
 import Section from './settings/Section.vue';
 
-import { mdiAlphaEBox, mdiFanOff, mdiFilter } from '@mdi/js';
+const IPFS_SVG =
+  'M12 0 1.608 6v12L12 24l10.392-6V6zm-1.073 1.445h.001a1.8 1.8 0 0 0 2.138 0l7.534 4.35a1.794 1.794 0 0 0 0 .403l-7.535 4.35a1.8 1.8 0 0 0-2.137 0l-7.536-4.35a1.795 1.795 0 0 0 0-.402zM21.324 7.4c.109.08.226.147.349.201v8.7a1.8 1.8 0 0 0-1.069 1.852l-7.535 4.35a1.8 1.8 0 0 0-.349-.2l-.009-8.653a1.8 1.8 0 0 0 1.07-1.851zm-18.648.048 7.535 4.35a1.8 1.8 0 0 0 1.069 1.852v8.7c-.124.054-.24.122-.349.202l-7.535-4.35a1.8 1.8 0 0 0-1.069-1.852v-8.7a1.85 1.85 0 0 0 .35-.202z';
 
 const ui = useUIState();
 
@@ -31,13 +35,14 @@ function save() {
 }
 
 const editingFilter = ref<string | null>(null);
+const editingIpfsGateway = ref<string | null>(null);
 </script>
 
 <template>
   <div>
     <div class="p-4">
       <div class="mx-auto flex max-w-xl flex-col gap-4">
-        <Section title="搜索设置">
+        <Section title="搜索">
           <Item
             :icon="mdiAlphaEBox"
             title="敏感内容阈值"
@@ -87,7 +92,39 @@ const editingFilter = ref<string | null>(null);
           </Item>
         </Section>
 
-        <Section title="界面设置">
+        <Section title="文件">
+          <Item
+            :icon="IPFS_SVG"
+            title="IPFS 网关"
+            :description="edit.ipfsGateway"
+            :empty="editingIpfsGateway !== null"
+          >
+            <MButton
+              v-if="editingIpfsGateway === null"
+              color="flat"
+              @click="editingIpfsGateway = pref.ipfsGateway"
+            >
+              编辑
+            </MButton>
+            <InputWithCheck
+              v-else
+              variant="flat"
+              class="w-full"
+              cancel
+              check-color="text-white"
+              @cancel="editingIpfsGateway = null"
+              @commit="
+                () => {
+                  edit.ipfsGateway = editingIpfsGateway!;
+                  editingIpfsGateway = null;
+                }
+              "
+              v-model="editingIpfsGateway"
+            />
+          </Item>
+        </Section>
+
+        <Section title="界面">
           <Item :icon="mdiFanOff" title="禁用动画" description="禁用动画以减少性能损耗">
             <MCheckbox v-model="edit.disableAnimation" />
           </Item>

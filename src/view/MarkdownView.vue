@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { ref, inject, provide } from 'vue';
+import markdownit from 'markdown-it';
+import markdownItReplaceLink, { type ReplaceLinkOptions } from 'markdown-it-replace-link';
+import type { Token } from 'markdown-it/index.js';
+
+import { inject, provide, ref } from 'vue';
 
 import { callFunction } from '@/misc';
 import type { IRawPartialNoviObject } from '@/model';
-import { compactModeKey, depthKey } from '@/ui';
 import { NoviObject } from '@/object';
+import { compactModeKey, depthKey } from '@/ui';
 
 import ObjectContent from '@/view/ObjectContent.vue';
-
-import markdownit, { type Token } from 'markdown-it';
-import markdownItReplaceLink, { type ReplaceLinkOptions } from 'markdown-it-replace-link';
 
 const props = defineProps<{
   objectId: string;

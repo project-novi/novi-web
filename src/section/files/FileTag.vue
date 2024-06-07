@@ -4,16 +4,17 @@ import { filesize } from 'filesize';
 import { computed, ref, watch } from 'vue';
 
 import { errorHandler, fetchApi } from '@/misc';
+import { type INoviObject } from '@/object';
 
 import { MSpinner } from '@/m';
 
 const props = defineProps<{
-  id: string;
+  object: INoviObject;
   name: string;
   variant: string;
 }>();
 
-const url = computed(() => `/api/files/${props.id}/${props.variant}`);
+const url = computed(() => props.object.url(props.variant));
 
 const fileSize = ref<string>();
 

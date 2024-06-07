@@ -37,7 +37,7 @@ const displayVariants = computed(() => {
     <div class="-mb-1">
       <FileTag
         v-for="t in displayVariants"
-        :id="object.id"
+        :object="object"
         :name="t[0]"
         :variant="t[1]"
         :key="t[1]"

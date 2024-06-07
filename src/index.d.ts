@@ -8,6 +8,6 @@ declare module '*.vue' {
 
 declare global {
   interface Window {
-    objectCache?: NoviObject;
+    ipfsGateway: string?;
   }
 }
