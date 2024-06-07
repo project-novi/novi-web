@@ -93,34 +93,24 @@ const editingIpfsGateway = ref<string | null>(null);
         </Section>
 
         <Section title="文件">
-          <Item
-            :icon="IPFS_SVG"
-            title="IPFS 网关"
-            :description="edit.ipfsGateway"
-            :empty="editingIpfsGateway !== null"
-          >
-            <MButton
-              v-if="editingIpfsGateway === null"
-              color="flat"
-              @click="editingIpfsGateway = pref.ipfsGateway"
-            >
-              编辑
-            </MButton>
-            <InputWithCheck
-              v-else
-              variant="flat"
-              class="w-full"
-              cancel
-              check-color="text-white"
-              @cancel="editingIpfsGateway = null"
-              @commit="
-                () => {
-                  edit.ipfsGateway = editingIpfsGateway!;
-                  editingIpfsGateway = null;
-                }
-              "
-              v-model="editingIpfsGateway"
-            />
+          <Item :icon="IPFS_SVG" title="使用自定义 IPFS 网关">
+            <MCheckbox v-model="edit.useCustomIpfs" />
+            <template #extra>
+              <div
+                class="overflow-hidden transition-[max-height]"
+                :class="{
+                  'max-h-0': !edit.useCustomIpfs,
+                  'max-h-12': edit.useCustomIpfs
+                }"
+              >
+                <MInput
+                  class="mt-1 w-full"
+                  variant="flat"
+                  check-color="text-white"
+                  v-model="edit.ipfsGateway"
+                />
+              </div>
+            </template>
           </Item>
         </Section>
 

@@ -61,7 +61,8 @@ export class NoviObject implements IPartialNoviObject {
   url(...prefs: string[]) {
     if (!prefs.length) prefs.push('original');
     let url = `/api/files/${this.id}/${prefs.join(',')}`;
-    url += '?gateway=' + encodeURIComponent(String(window.ipfsGateway));
+    if (window.ipfsGateway)
+      url += '?gateway=' + encodeURIComponent(String(window.ipfsGateway));
     return url;
   }
 
