@@ -71,7 +71,7 @@ useHotKey('Escape', cancelEdit, { allowEdit: true });
 
 function saveEdit() {
   if (!editing.value || saving.value) return false;
-  editing.value = false;
+  addTag();
   let tags: Record<string, null> = {};
   for (let tag of display.value) tags[tag] = null;
   fetchApi(
@@ -84,6 +84,7 @@ function saveEdit() {
     (raw: IRawNoviObject) => {
       props.object.assign(raw);
       push.success('已保存');
+      editing.value = false;
     },
     loadingGuard(saving)
   );
@@ -104,7 +105,6 @@ function addTag() {
     return;
   }
   display.value.push(tag);
-  display.value.sort();
 }
 </script>
 
@@ -124,7 +124,7 @@ function addTag() {
     <div v-else class="flex p-4">
       <span class="mx-auto italic font-semibold">暂无标签</span>
     </div>
-    <div class="flex justify-end gap-2 items-center">
+    <div class="flex justify-end gap-2 items-center mt-2">
       <MButton v-if="!editing && !saving" color="flat" @click="startEdit">编辑</MButton>
       <template v-else>
         <TagInput
@@ -142,18 +142,9 @@ function addTag() {
           ref="tagInputEl"
         />
         <MButton color="red" :disabled="saving" @click="cancelEdit">取消</MButton>
-        <MButton
-          color="green"
-          :disabled="saving"
-          :loading="saving"
-          @click="
-            () => {
-              addTag();
-              saveEdit();
-            }
-          "
-          >保存</MButton
-        >
+        <MButton color="green" :disabled="saving" :loading="saving" @click="saveEdit">
+          保存
+        </MButton>
       </template>
     </div>
   </Section>
@@ -163,13 +154,14 @@ function addTag() {
 .tags-move,
 .tags-enter-active,
 .tags-leave-active {
-  transition: transform 0.4s;
+  transition: all 0.4s;
+  transition-property: transform, opacity;
 }
 
 .tags-enter-from,
 .tags-leave-to {
   opacity: 0;
-  transform: scaleY(0.2) translate(30px, 0);
+  transform: translate(30px, 0);
 }
 
 .tags-leave-active {
