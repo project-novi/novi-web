@@ -10,10 +10,10 @@ import { MIcon, MSpinner } from '@/m';
 import ObjectContent from '@/view/ObjectContent.vue';
 
 import AttrsSection from '@/section/AttrsSection.vue';
+import FilesSection from '@/section/FilesSection.vue';
 import TagsSection from '@/section/TagsSection.vue';
 
 import { mdiArrowLeft, mdiFullscreen, mdiFullscreenExit, mdiPageLayoutHeaderFooter } from '@mdi/js';
-import FilesSection from '@/section/FilesSection.vue';
 
 const route = useRoute();
 const router = useRouter();

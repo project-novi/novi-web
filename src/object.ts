@@ -8,9 +8,10 @@ const EXPIRE_TIME = 1000 * 30;
 export interface IPartialNoviObject extends IRawPartialNoviObject {
   tags: Record<string, string | null>;
 
+  assign(raw: IRawPartialNoviObject): void;
+
   has(tag: string): boolean;
   get(tag: string): string | null;
-  set(tag: string, value: string | null): Promise<void>;
   url(...prefs: string[]): string;
 
   subtags(prefix: string): Record<string, string | null>;
@@ -49,7 +50,7 @@ export class NoviObject implements IPartialNoviObject {
     this.saveLocal();
   }
 
-  private assign(raw: IRawPartialNoviObject) {
+  assign(raw: IRawPartialNoviObject) {
     if ('updated' in raw) {
       if ('updated' in this && this.updated === raw.updated) return;
       Object.assign(this, raw);
@@ -61,8 +62,7 @@ export class NoviObject implements IPartialNoviObject {
   url(...prefs: string[]) {
     if (!prefs.length) prefs.push('original');
     let url = `/api/files/${this.id}/${prefs.join(',')}`;
-    if (window.ipfsGateway)
-      url += '?gateway=' + encodeURIComponent(String(window.ipfsGateway));
+    if (window.ipfsGateway) url += '?gateway=' + encodeURIComponent(String(window.ipfsGateway));
     return url;
   }
 
@@ -80,15 +80,6 @@ export class NoviObject implements IPartialNoviObject {
 
   get size() {
     return (this.tags['@res']?.split('x').map(Number) as [number, number]) ?? [0, 0];
-  }
-
-  async set(tag: string, value: string | null): Promise<void> {
-    this.assign(
-      await fetchApi(`/objects/${this.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ [tag]: value })
-      })
-    );
   }
 
   get expired() {

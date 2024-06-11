@@ -35,7 +35,7 @@ watch(
     tags.sort();
     userTags.value = tags;
   },
-  { immediate: true }
+  { immediate: true, deep: true }
 );
 const display = ref<string[]>([]);
 watch(
@@ -82,7 +82,7 @@ function saveEdit() {
       json: tags
     },
     (raw: IRawNoviObject) => {
-      NoviObject.fromRaw(raw);
+      props.object.assign(raw);
       push.success('已保存');
     },
     loadingGuard(saving)
@@ -142,7 +142,18 @@ function addTag() {
           ref="tagInputEl"
         />
         <MButton color="red" :disabled="saving" @click="cancelEdit">取消</MButton>
-        <MButton color="green" :disabled="saving" :loading="saving" @click="saveEdit">保存</MButton>
+        <MButton
+          color="green"
+          :disabled="saving"
+          :loading="saving"
+          @click="
+            () => {
+              addTag();
+              saveEdit();
+            }
+          "
+          >保存</MButton
+        >
       </template>
     </div>
   </Section>

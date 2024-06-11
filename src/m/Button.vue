@@ -25,7 +25,7 @@ withDefaults(
 
 <template>
   <button
-    class="flex select-none items-center justify-center gap-1.5 rounded px-4 py-2 text-sm font-semibold disabled:bg-black/30"
+    class="flex select-none items-center justify-center gap-1.5 rounded px-4 py-2 text-sm font-semibold disabled:bg-black/30 text-nowrap"
     :class="[
       COLORS[color],
       { 'shadow-md transition-[box-shadow] hover:shadow-lg': color !== 'flat' }
