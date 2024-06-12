@@ -5,7 +5,7 @@ import { push } from 'notivue';
 
 import { fetchApi, loadingGuard } from '@/misc';
 import type { IRawNoviObject } from '@/model';
-import { type INoviObject, NoviObject } from '@/object';
+import { type INoviObject } from '@/object';
 import { useHotKey } from '@/ui';
 
 import { MButton } from '@/m';

@@ -8,7 +8,11 @@ import { type INoviObject, NoviObject } from '@/object';
 import { usePref } from '@/pref';
 import { SearchState, useEventListener, useUIState } from '@/ui';
 
+import { MButton, MIcon } from '@/m';
+
 import ObjectMasonry from '@/view/ObjectMasonry.vue';
+
+import { mdiPlus } from '@mdi/js';
 
 const pref = usePref();
 const route = useRoute();
@@ -90,5 +94,10 @@ useEventListener(
 <template>
   <div class="min-h-[110vh] p-4">
     <ObjectMasonry v-if="objects" :objects="objects" :max-columns="7" class="w-full" />
+    <div class="fixed right-12 bottom-12">
+      <MButton class="rounded-full size-16" color="pink">
+        <MIcon :icon="mdiPlus" width="48" height="48" />
+      </MButton>
+    </div>
   </div>
 </template>

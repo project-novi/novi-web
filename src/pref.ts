@@ -6,7 +6,7 @@ export const usePref = defineStore('settings', {
       sensitiveBlur: 'q',
       extraFilter: '@ -@hidden',
       useCustomIpfs: false,
-      ipfsGateway: 'http://127.0.0.1:8080',
+      ipfsGateway: '',
       orderByCreated: true,
       disableAnimation: false
     };
