@@ -37,12 +37,17 @@ const size = computed(() => object.value?.size);
       :images="[object.url()]"
       :options="{ container: 'dialog' }"
     >
-      <img v-if="depth === 0" :src="object.url('thumbnail')" :width="size[0]" :height="size[1]" />
+      <img
+        v-if="depth === 0"
+        :src="object.url('thumbnail')"
+        :width="size[0]"
+        :height="size[1]"
+      />
       <img
         :class="{
           'absolute inset-0': depth === 0
         }"
-        :src="object.url('avif', 'original')"
+        :src="object.url('avif,original')"
         loading="lazy"
         :width="size[0]"
         :height="size[1]"

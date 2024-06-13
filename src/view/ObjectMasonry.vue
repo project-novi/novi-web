@@ -53,7 +53,7 @@ function shouldBlur(obj: IPartialNoviObject) {
         :to="{ name: 'object', params: { id: item.id } }"
       >
         <img
-          :src="item.url('thumbnail')"
+          :src="item.url('thumbnail', { gen_thumb: 'true' })"
           :width="item.size[0]"
           :height="item.size[1]"
           @load="tryRemove"

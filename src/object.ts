@@ -12,7 +12,7 @@ export interface IPartialNoviObject extends IRawPartialNoviObject {
 
   has(tag: string): boolean;
   get(tag: string): string | null;
-  url(...prefs: string[]): string;
+  url(prefs?: string, query?: Record<string, string>): string;
 
   subtags(prefix: string): Record<string, string | null>;
 
@@ -59,11 +59,10 @@ export class NoviObject implements IPartialNoviObject {
     this.saveLocal();
   }
 
-  url(...prefs: string[]) {
-    if (!prefs.length) prefs.push('original');
-    let url = `/api/files/${this.id}/${prefs.join(',')}`;
-    if (window.ipfsGateway) url += '?gateway=' + encodeURIComponent(String(window.ipfsGateway));
-    return url;
+  url(prefs: string = 'original', query: Record<string, string> = {}) {
+    let url = `/api/files/${this.id}/${prefs}`;
+    if (window.ipfsGateway) query['gateway'] = String(window.ipfsGateway);
+    return url + '?' + new URLSearchParams(query).toString();
   }
 
   private saveLocal() {
