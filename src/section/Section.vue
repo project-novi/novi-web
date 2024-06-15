@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { provide, ref } from 'vue';
+
+import { openSectionKey } from '@/ui';
 
 import { MIcon } from '@/m';
 
@@ -14,11 +16,7 @@ const props = defineProps<{
 const container = ref<HTMLElement>();
 const expanded = ref(props.defaultOpen ?? false);
 
-function open() {
-  expanded.value = true;
-}
-
-defineExpose({ open });
+provide(openSectionKey, () => (expanded.value = true));
 </script>
 
 <template>
@@ -49,7 +47,7 @@ defineExpose({ open });
         'p-2': expanded
       }"
     >
-      <slot />
+      <slot :expanded="expanded" />
     </div>
   </div>
 </template>

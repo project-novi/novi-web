@@ -19,8 +19,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        // target: 'https://novi.mivik.moe/api',
-        target: 'http://127.0.0.1:1879',
+        target: 'https://novi.mivik.moe/api',
+        // target: 'http://127.0.0.1:1879',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       }

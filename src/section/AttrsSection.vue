@@ -1,24 +1,22 @@
 <script setup lang="ts">
-import { nextTick, ref, watch } from 'vue';
+import { inject, nextTick, ref, watch } from 'vue';
 
 import { push } from 'notivue';
 
 import { fetchApi, loadingGuard } from '@/misc';
 import type { IRawNoviObject } from '@/model';
 import { type INoviObject, NoviObject } from '@/object';
-import { useHotKey } from '@/ui';
+import { openSectionKey, useHotKey } from '@/ui';
 
 import { MButton, MIcon, MInput } from '@/m';
 
-import { mdiCloseThick, mdiFormatListBulletedType, mdiMinusThick, mdiPlusThick } from '@mdi/js';
-
-import Section from './Section.vue';
+import { mdiCloseThick, mdiMinusThick, mdiPlusThick } from '@mdi/js';
 
 const props = defineProps<{
   object: INoviObject;
 }>();
 
-const section = ref<typeof Section>();
+const openSection = inject(openSectionKey)!;
 
 const editing = ref(false),
   saving = ref(false);
@@ -48,7 +46,7 @@ watch(
 const newAttr = ref('');
 function startEdit() {
   if (editing.value) return false;
-  section.value!.open();
+  openSection();
   newAttr.value = '';
   editing.value = true;
   display.value = [];
@@ -114,71 +112,73 @@ function addAttr() {
 </script>
 
 <template>
-  <Section :icon="mdiFormatListBulletedType" title="对象属性" ref="section">
-    <div class="max-h-[300px] overflow-y-scroll">
-      <table class="border-collapse w-full">
-        <thead>
-          <tr>
-            <th class="p-1">属性</th>
-            <th class="p-1">值</th>
-          </tr>
-        </thead>
+  <div class="max-h-[300px] overflow-y-scroll">
+    <table class="border-collapse w-full">
+      <thead>
+        <tr>
+          <th class="p-1">属性</th>
+          <th class="p-1">值</th>
+        </tr>
+      </thead>
 
-        <tbody ref="tbody">
-          <tr v-for="tv in display">
-            <td class="text-gray-300 p-2 max-w-32 text-ellipsis overflow-hidden" :title="tv[0]">
-              {{ tv[0] }}
-            </td>
-            <td v-if="!editing" class="p-2 max-w-64">
-              <p v-if="tv[1] !== null" class="grow whitespace-nowrap text-ellipsis overflow-hidden" :title="tv[1]">
-                {{ tv[1] }}
-              </p>
-              <p v-else class="italic text-gray-400">空</p>
-            </td>
-            <td v-else class="p-1">
-              <div class="flex gap-2">
-                <template v-if="tv[1] !== null">
-                  <MInput variant="outline" class="grow min-w-24" v-model="tv[1]" />
-                  <button class="text-gray-300" @click="tv[1] = null">
-                    <MIcon :icon="mdiMinusThick" />
-                  </button>
-                </template>
-                <template v-else>
-                  <p class="italic text-gray-400 grow" tabindex="-1">空</p>
-                  <button class="text-green-500" @click="tv[1] = ''">
-                    <MIcon :icon="mdiPlusThick" />
-                  </button>
-                </template>
-                <button class="text-red-500" @click="display.splice(display.indexOf(tv), 1)">
-                  <MIcon :icon="mdiCloseThick" />
+      <tbody ref="tbody">
+        <tr v-for="tv in display">
+          <td class="text-gray-300 p-2 max-w-32 text-ellipsis overflow-hidden" :title="tv[0]">
+            {{ tv[0] }}
+          </td>
+          <td v-if="!editing" class="p-2 max-w-64">
+            <p
+              v-if="tv[1] !== null"
+              class="grow whitespace-nowrap text-ellipsis overflow-hidden"
+              :title="tv[1]"
+            >
+              {{ tv[1] }}
+            </p>
+            <p v-else class="italic text-gray-400">空</p>
+          </td>
+          <td v-else class="p-1">
+            <div class="flex gap-2">
+              <template v-if="tv[1] !== null">
+                <MInput variant="outline" class="grow min-w-24" v-model="tv[1]" />
+                <button class="text-gray-300" @click="tv[1] = null">
+                  <MIcon :icon="mdiMinusThick" />
                 </button>
-              </div>
-            </td>
-          </tr>
+              </template>
+              <template v-else>
+                <p class="italic text-gray-400 grow" tabindex="-1">空</p>
+                <button class="text-green-500" @click="tv[1] = ''">
+                  <MIcon :icon="mdiPlusThick" />
+                </button>
+              </template>
+              <button class="text-red-500" @click="display.splice(display.indexOf(tv), 1)">
+                <MIcon :icon="mdiCloseThick" />
+              </button>
+            </div>
+          </td>
+        </tr>
 
-          <tr v-if="editing">
-            <td class="p-1">
-              <MInput
-                variant="outline"
-                class="min-w-0"
-                size="10"
-                v-model="newAttr"
-                @enter="addAttr"
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+        <tr v-if="editing">
+          <td class="p-1">
+            <MInput
+              variant="outline"
+              class="min-w-0"
+              size="10"
+              v-model="newAttr"
+              @enter="addAttr"
+            />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-    <div class="flex justify-end gap-2 items-center">
-      <MButton v-if="!editing && !saving" color="flat" @click="startEdit">编辑</MButton>
-      <template v-else>
-        <MButton color="red" :disabled="saving" @click="cancelEdit">取消</MButton>
-        <MButton color="green" :disabled="saving" :loading="saving" @click="saveEdit">保存</MButton>
-      </template>
-    </div>
-  </Section>
+  <div class="flex justify-end gap-2 items-center">
+    <MButton v-if="!editing && !saving" color="flat" @click="startEdit">编辑</MButton>
+    <template v-else>
+      <MButton color="red" :disabled="saving" @click="cancelEdit">取消</MButton>
+      <MButton color="green" :disabled="saving" :loading="saving" @click="saveEdit">保存</MButton>
+    </template>
+  </div>
 </template>
 
 <style lang="scss">

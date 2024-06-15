@@ -3,9 +3,6 @@ import { computed } from 'vue';
 
 import type { INoviObject } from '@/object';
 
-import { mdiFileMultiple } from '@mdi/js';
-
-import Section from './Section.vue';
 import FileTag from './files/FileTag.vue';
 
 const props = defineProps<{
@@ -33,15 +30,13 @@ const displayVariants = computed(() => {
 </script>
 
 <template>
-  <Section :icon="mdiFileMultiple" title="文件">
-    <div class="-mb-1">
-      <FileTag
-        v-for="t in displayVariants"
-        :object="object"
-        :name="t[0]"
-        :variant="t[1]"
-        :key="t[1]"
-      />
-    </div>
-  </Section>
+  <div class="-mb-1">
+    <FileTag
+      v-for="t in displayVariants"
+      :object="object"
+      :name="t[0]"
+      :variant="t[1]"
+      :key="t[1]"
+    />
+  </div>
 </template>

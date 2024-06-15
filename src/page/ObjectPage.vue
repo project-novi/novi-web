@@ -11,9 +11,17 @@ import ObjectContent from '@/view/ObjectContent.vue';
 
 import AttrsSection from '@/section/AttrsSection.vue';
 import FilesSection from '@/section/FilesSection.vue';
+import Section from '@/section/Section.vue';
 import TagsSection from '@/section/TagsSection.vue';
 
-import { mdiArrowLeft, mdiFullscreen, mdiFullscreenExit, mdiPageLayoutHeaderFooter } from '@mdi/js';
+import {
+  mdiArrowLeft,
+  mdiFileMultiple,
+  mdiFullscreen,
+  mdiFullscreenExit,
+  mdiPageLayoutHeaderFooter,
+  mdiTag
+} from '@mdi/js';
 
 const route = useRoute();
 const router = useRouter();
@@ -106,9 +114,21 @@ useHotKey('f', () => {
         <MSpinner class="m-auto w-12" />
       </div>
       <template v-else>
-        <TagsSection :object="object" />
-        <FilesSection :object="object" />
-        <AttrsSection :object="object" />
+        <Section :icon="mdiTag" title="标签" default-open>
+          <TagsSection :object="object" />
+        </Section>
+
+        <Section :icon="mdiFileMultiple" title="文件" v-slot="{ expanded }">
+          <KeepAlive>
+            <FilesSection v-if="expanded" :object="object" />
+          </KeepAlive>
+        </Section>
+        
+        <Section :icon="mdiPageLayoutHeaderFooter" title="属性" v-slot="{ expanded }">
+          <KeepAlive>
+            <AttrsSection v-if="expanded" :object="object" />
+          </KeepAlive>
+        </Section>
       </template>
     </div>
   </div>

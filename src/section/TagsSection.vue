@@ -1,27 +1,23 @@
 <script setup lang="ts">
-import { nextTick, ref, watch } from 'vue';
+import { inject, nextTick, ref, watch } from 'vue';
 
 import { push } from 'notivue';
 
 import { fetchApi, loadingGuard } from '@/misc';
 import type { IRawNoviObject } from '@/model';
 import { type INoviObject } from '@/object';
-import { useHotKey } from '@/ui';
+import { openSectionKey, useHotKey } from '@/ui';
 
 import { MButton } from '@/m';
 
 import TagInput from '@/view/TagInput.vue';
 import TagView from '@/view/TagView.vue';
 
-import { mdiTag } from '@mdi/js';
-
-import Section from './Section.vue';
-
 const props = defineProps<{
   object: INoviObject;
 }>();
 
-const section = ref<typeof Section>();
+const openSection = inject(openSectionKey)!;
 
 const editing = ref(false),
   saving = ref(false);
@@ -50,7 +46,7 @@ watch(
 const tagInputEl = ref<typeof TagInput>();
 function startEdit() {
   if (editing.value) return false;
-  section.value!.open();
+  openSection();
   tagInput.value = '';
   editing.value = true;
   display.value = [...userTags.value];
@@ -109,45 +105,41 @@ function addTag() {
 </script>
 
 <template>
-  <Section :icon="mdiTag" title="标签" default-open ref="section">
-    <div v-if="display">
-      <TransitionGroup name="tags">
-        <TagView
-          v-for="tag in display"
-          :tag="tag"
-          :key="tag"
-          :editing="editing"
-          @delete="deleteTag"
-        />
-      </TransitionGroup>
-    </div>
-    <div v-else class="flex p-4">
-      <span class="mx-auto italic font-semibold">暂无标签</span>
-    </div>
-    <div class="flex justify-end gap-2 items-center mt-2">
-      <MButton v-if="!editing && !saving" color="flat" @click="startEdit">编辑</MButton>
-      <template v-else>
-        <TagInput
-          class="grow"
-          :disabled="saving"
-          autofocus
-          @enter="
-            (e: KeyboardEvent) => {
-              addTag();
-              e.preventDefault();
-              if (e.ctrlKey) saveEdit();
-            }
-          "
-          v-model="tagInput"
-          ref="tagInputEl"
-        />
-        <MButton color="red" :disabled="saving" @click="cancelEdit">取消</MButton>
-        <MButton color="green" :disabled="saving" :loading="saving" @click="saveEdit">
-          保存
-        </MButton>
-      </template>
-    </div>
-  </Section>
+  <div v-if="display">
+    <TransitionGroup name="tags">
+      <TagView
+        v-for="tag in display"
+        :tag="tag"
+        :key="tag"
+        :editing="editing"
+        @delete="deleteTag"
+      />
+    </TransitionGroup>
+  </div>
+  <div v-else class="flex p-4">
+    <span class="mx-auto italic font-semibold">暂无标签</span>
+  </div>
+  <div class="flex justify-end gap-2 items-center mt-2">
+    <MButton v-if="!editing && !saving" color="flat" @click="startEdit">编辑</MButton>
+    <template v-else>
+      <TagInput
+        class="grow"
+        :disabled="saving"
+        autofocus
+        @enter="
+          (e: KeyboardEvent) => {
+            addTag();
+            e.preventDefault();
+            if (e.ctrlKey) saveEdit();
+          }
+        "
+        v-model="tagInput"
+        ref="tagInputEl"
+      />
+      <MButton color="red" :disabled="saving" @click="cancelEdit">取消</MButton>
+      <MButton color="green" :disabled="saving" :loading="saving" @click="saveEdit"> 保存 </MButton>
+    </template>
+  </div>
 </template>
 
 <style>

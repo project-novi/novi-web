@@ -86,3 +86,4 @@ export function getScreenBreakpoint(breakpoint: string) {
 
 export const depthKey = Symbol() as InjectionKey<number>;
 export const compactModeKey = Symbol() as InjectionKey<Ref<boolean>>;
+export const openSectionKey = Symbol() as InjectionKey<() => void>;
