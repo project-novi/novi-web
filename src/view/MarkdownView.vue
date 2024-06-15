@@ -104,7 +104,7 @@ callFunction('markdown.render', { id: props.objectId }, (res) => {
       :class="{ 'prose-img:my-0': compact }"
     >
       <template v-if="content" v-for="part in content">
-        <div v-if="part instanceof ObjectId" class="self-center">
+        <div v-if="part instanceof ObjectId" class="self-center relative">
           <ObjectContent :objectId="part.id" />
         </div>
         <div v-else v-html="part" />
