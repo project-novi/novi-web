@@ -2,13 +2,15 @@
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { fetchApi } from '@/misc';
+import { push } from 'notivue';
+
+import { fetchApi, loadingGuard } from '@/misc';
 import { type IRawNoviObject } from '@/model';
 import { type INoviObject, NoviObject } from '@/object';
 import { usePref } from '@/pref';
-import { SearchState, useEventListener, useUIState } from '@/ui';
+import { SearchState, useEventListener, useHotKey, useUIState } from '@/ui';
 
-import { MButton, MIcon } from '@/m';
+import { MButton, MDialog, MIcon, MInput } from '@/m';
 
 import ObjectMasonry from '@/view/ObjectMasonry.vue';
 
@@ -89,15 +91,49 @@ useEventListener(
   },
   window
 );
+
+const newObjectDialog = ref<typeof MDialog>();
+const newObjectUrl = ref(''),
+  scraping = ref(false);
+function scrape() {
+  fetchApi(
+    '/functions/scrape',
+    {
+      method: 'POST',
+      json: { url: newObjectUrl.value }
+    },
+    (resp) => {
+      console.log(resp);
+      push.success('爬取成功');
+      router.push({
+        name: 'object',
+        params: { id: resp['id'] }
+      });
+    },
+    loadingGuard(scraping)
+  );
+}
+useHotKey('n', () => newObjectDialog.value?.open());
 </script>
 
 <template>
   <div class="min-h-[110vh] p-4">
     <ObjectMasonry v-if="objects" :objects="objects" :max-columns="7" class="w-full" />
     <div class="fixed right-12 bottom-12">
-      <MButton class="rounded-full size-16" color="pink">
+      <MButton class="rounded-full size-16" color="pink" @click="newObjectDialog?.open()">
         <MIcon :icon="mdiPlus" width="48" height="48" />
       </MButton>
     </div>
+
+    <MDialog title="创建" ref="newObjectDialog">
+      <div class="flex flex-col gap-2">
+        <MInput v-model="newObjectUrl" autofocus variant="flat" placeholder="爬取 URL" @enter="scrape" />
+        <div class="flex justify-end">
+          <MButton :disabled="scraping" :loading="scraping" color="flat" @click="scrape">
+            爬取
+          </MButton>
+        </div>
+      </div>
+    </MDialog>
   </div>
 </template>

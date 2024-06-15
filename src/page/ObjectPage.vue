@@ -123,7 +123,7 @@ useHotKey('f', () => {
             <FilesSection v-if="expanded" :object="object" />
           </KeepAlive>
         </Section>
-        
+
         <Section :icon="mdiPageLayoutHeaderFooter" title="属性" v-slot="{ expanded }">
           <KeepAlive>
             <AttrsSection v-if="expanded" :object="object" />
