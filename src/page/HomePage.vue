@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { push } from 'notivue';
 
-import { fetchApi, loadingGuard } from '@/misc';
+import { callFunction, fetchApi, loadingGuard } from '@/misc';
 import { type IRawNoviObject } from '@/model';
 import { type INoviObject, NoviObject } from '@/object';
 import { usePref } from '@/pref';
@@ -96,13 +96,10 @@ const newObjectDialog = ref<typeof MDialog>();
 const newObjectUrl = ref(''),
   scraping = ref(false);
 function scrape() {
-  fetchApi(
-    '/functions/scrape',
-    {
-      method: 'POST',
-      json: { url: newObjectUrl.value }
-    },
-    (resp) => {
+  callFunction(
+    'scrape',
+    { url: newObjectUrl.value },
+    (resp: any) => {
       console.log(resp);
       push.success('爬取成功');
       router.push({
@@ -127,7 +124,13 @@ useHotKey('n', () => newObjectDialog.value?.open());
 
     <MDialog title="创建" ref="newObjectDialog">
       <div class="flex flex-col gap-2">
-        <MInput v-model="newObjectUrl" autofocus variant="flat" placeholder="爬取 URL" @enter="scrape" />
+        <MInput
+          v-model="newObjectUrl"
+          autofocus
+          variant="flat"
+          placeholder="爬取 URL"
+          @enter="scrape"
+        />
         <div class="flex justify-end">
           <MButton :disabled="scraping" :loading="scraping" color="flat" @click="scrape">
             爬取

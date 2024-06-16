@@ -1,7 +1,6 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    color?: string;
     size?: string;
   }>(),
   {
@@ -17,7 +16,7 @@ withDefaults(
       fill="none"
       stroke-dasharray="30"
       stroke-dashoffset="8"
-      :stroke="color"
+      stroke="currentColor"
       stroke-width="1.1"
       r="4"
     />

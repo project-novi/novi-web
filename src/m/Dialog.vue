@@ -23,15 +23,21 @@ defineExpose({
 </script>
 
 <template>
-  <dialog class="bg-slate-700 rounded min-w-72 backdrop:bg-black/50 text-white" ref="dialog">
-    <div class="flex p-2 items-center pb-0">
-      <button v-ripple class="flex size-8 rounded-full">
-        <MIcon :icon="mdiArrowLeft" class="m-auto" />
-      </button>
-      <h2 class="text-lg font-bold flex-1 truncate ml-1">{{ title }}</h2>
-    </div>
-    <div class="w-full px-3 py-3">
-      <slot />
+  <dialog
+    class="bg-slate-700 rounded min-w-72 backdrop:bg-black/50 text-white"
+    ref="dialog"
+    @click="dialog?.close"
+  >
+    <div @click.stop>
+      <div class="flex p-2 items-center pb-0">
+        <button v-ripple class="flex size-8 rounded-full" @click="dialog?.close">
+          <MIcon :icon="mdiArrowLeft" class="m-auto" />
+        </button>
+        <h2 class="text-lg font-bold flex-1 truncate ml-1">{{ title }}</h2>
+      </div>
+      <div class="w-full px-3 py-3">
+        <slot />
+      </div>
     </div>
   </dialog>
 </template>

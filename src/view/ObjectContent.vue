@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { component as Viewer } from 'v-viewer';
-
 import { computed, defineAsyncComponent, inject } from 'vue';
 import 'vue-plyr/dist/vue-plyr.css';
 
@@ -31,15 +29,9 @@ const size = computed(() => object.value?.size);
 </script>
 
 <template>
-  <div v-if="object" class="group object-content relative">
+  <div v-if="object" class="group object-content relative max-w-full">
     <template v-if="ty === 'image'">
-      <Viewer
-        v-if="size"
-        :id="`object-${objectId}`"
-        class="relative lg:max-w-full"
-        :images="[object.url()]"
-        :options="{ container: 'dialog' }"
-      >
+      <div v-if="size" class="relative">
         <img v-if="depth === 0" :src="object.url('thumbnail')" :width="size[0]" :height="size[1]" />
         <img
           :class="{
@@ -50,7 +42,7 @@ const size = computed(() => object.value?.size);
           :width="size[0]"
           :height="size[1]"
         />
-      </Viewer>
+      </div>
     </template>
 
     <VuePlyr v-else-if="ty === 'video'">

@@ -41,6 +41,9 @@ export function fetchApi(
         return JSON.parse(text);
       }
       let error = await res.text();
+      if (res.status === 401 && error.includes('invalid identity')) {
+        document.cookie = 'identity=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      }
       try {
         error = JSON.parse(error).error;
       } catch (e) {}
