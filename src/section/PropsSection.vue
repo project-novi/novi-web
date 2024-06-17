@@ -22,20 +22,20 @@ const editing = ref(false),
   saving = ref(false);
 
 type Tags = [string, string | null][];
-const attrs = ref<Tags>([]);
+const properties = ref<Tags>([]);
 watch(
   () => props.object,
   (obj) => {
     let tags: Tags = [];
     for (let tag in obj.tags) if (tag.startsWith('@')) tags.push([tag.substring(1), obj.tags[tag]]);
     tags.sort((a, b) => a[0].localeCompare(b[0]));
-    attrs.value = tags;
+    properties.value = tags;
   },
   { immediate: true }
 );
 const display = ref<Tags>([]);
 watch(
-  attrs,
+  properties,
   (tags) => {
     if (editing.value) return;
     display.value = tags;
@@ -43,21 +43,21 @@ watch(
   { immediate: true }
 );
 
-const newAttr = ref('');
+const newProperty = ref('');
 function startEdit() {
   if (editing.value) return false;
   openSection();
-  newAttr.value = '';
+  newProperty.value = '';
   editing.value = true;
   display.value = [];
-  for (let tv of attrs.value) display.value.push([...tv]);
+  for (let tv of properties.value) display.value.push([...tv]);
 }
 useHotKey('Shift+E', startEdit, { allowEdit: true });
 
 function cancelEdit() {
   if (!editing.value) return false;
   editing.value = false;
-  display.value = attrs.value;
+  display.value = properties.value;
 }
 useHotKey('Escape', cancelEdit, { allowEdit: true });
 
@@ -67,7 +67,7 @@ function saveEdit() {
   let tags: Record<string, string | null> = {};
   for (let [tag, value] of Object.entries(props.object.tags))
     if (!tag.startsWith('@')) tags[tag] = value;
-  for (let [attr, value] of display.value) tags['@' + attr] = value;
+  for (let [prop, value] of display.value) tags['@' + prop] = value;
 
   fetchApi(
     `/objects/${props.object.id}`,
@@ -85,9 +85,9 @@ function saveEdit() {
 }
 
 const tbody = ref<HTMLTableSectionElement>();
-function focusAttr(attr: string) {
+function focusProperty(prop: string) {
   for (let i = 0; i < display.value.length; i++) {
-    if (display.value[i][0] === attr) {
+    if (display.value[i][0] === prop) {
       let row = tbody.value?.rows[i];
       let selector = display.value[i][1] === null ? 'p' : 'input';
       (row?.querySelector(selector) as HTMLElement | null)?.focus();
@@ -95,19 +95,19 @@ function focusAttr(attr: string) {
     }
   }
 }
-function addAttr() {
-  let tag = newAttr.value.trim();
-  newAttr.value = '';
+function addProperty() {
+  let tag = newProperty.value.trim();
+  newProperty.value = '';
   if (!tag) return;
-  for (let [attr, _] of display.value)
-    if (attr === tag) {
+  for (let [prop, _] of display.value)
+    if (prop === tag) {
       push.warning('属性已存在');
-      focusAttr(tag);
+      focusProperty(tag);
       return;
     }
   display.value.push([tag, '']);
   display.value.sort((a, b) => a[0].localeCompare(b[0]));
-  nextTick(() => focusAttr(tag));
+  nextTick(() => focusProperty(tag));
 }
 </script>
 
@@ -163,8 +163,8 @@ function addAttr() {
               variant="outline"
               class="min-w-0"
               size="10"
-              v-model="newAttr"
-              @enter="addAttr"
+              v-model="newProperty"
+              @enter="addProperty"
             />
           </td>
         </tr>

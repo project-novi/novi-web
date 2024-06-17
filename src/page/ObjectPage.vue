@@ -9,8 +9,8 @@ import { MIcon, MSpinner } from '@/m';
 
 import ObjectContent from '@/view/ObjectContent.vue';
 
-import AttrsSection from '@/section/AttrsSection.vue';
 import FilesSection from '@/section/FilesSection.vue';
+import PropsSection from '@/section/PropsSection.vue';
 import Section from '@/section/Section.vue';
 import TagsSection from '@/section/TagsSection.vue';
 
@@ -126,7 +126,7 @@ useHotKey('f', () => {
 
         <Section :icon="mdiPageLayoutHeaderFooter" title="属性" v-slot="{ expanded }">
           <KeepAlive>
-            <AttrsSection v-if="expanded" :object="object" />
+            <PropsSection v-if="expanded" :object="object" />
           </KeepAlive>
         </Section>
       </template>
