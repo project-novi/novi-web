@@ -49,8 +49,8 @@ function goto(route: RouteLocationRaw) {
           <NavRailItem
             :icon="mdiInvoiceList"
             name="任务列表"
-            :active="route.name === 'task'"
-            @click="goto({ name: 'task' })"
+            :active="route.name === 'task' || route.name === 'tasks'"
+            @click="goto({ name: 'tasks' })"
           />
           <NavRailItem
             :icon="mdiImageSearch"

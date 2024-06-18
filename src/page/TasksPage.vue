@@ -32,17 +32,17 @@ const tasks = ref<Task[]>();
 function loadTasks() {
   tasks.value = undefined;
   fetchApi(
-  '/functions/task.list',
-  {
-    method: 'POST',
-    query: {
-      filter: '@task'
+    '/functions/task.list',
+    {
+      method: 'POST',
+      query: {
+        filter: '@task'
+      }
+    },
+    (resp) => {
+      tasks.value = resp.tasks as Task[];
     }
-  },
-  (resp) => {
-    tasks.value = resp.tasks as Task[];
-  }
-);
+  );
 }
 loadTasks();
 
