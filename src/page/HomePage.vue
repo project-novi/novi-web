@@ -97,15 +97,11 @@ const newObjectUrl = ref(''),
   scraping = ref(false);
 function scrape() {
   callFunction(
-    'scrape',
-    { url: newObjectUrl.value },
-    (resp: any) => {
-      console.log(resp);
-      push.success('爬取成功');
-      router.push({
-        name: 'object',
-        params: { id: resp['id'] }
-      });
+    'task.call',
+    { name: 'scrape', arguments: { url: newObjectUrl.value } },
+    () => {
+      push.success('任务已创建');
+      router.push({ name: 'tasks' });
     },
     loadingGuard(scraping)
   );

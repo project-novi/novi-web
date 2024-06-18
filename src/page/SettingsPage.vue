@@ -34,7 +34,6 @@ function save() {
 }
 
 const editingFilter = ref<string | null>(null);
-const editingIpfsGateway = ref<string | null>(null);
 </script>
 
 <template>

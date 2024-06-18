@@ -25,7 +25,7 @@ import {
 
 const route = useRoute();
 const router = useRouter();
-const objectId = String(route.params['id']);
+const objectId = String(route.params.id);
 
 const object = NoviObject.fetchRef(objectId);
 

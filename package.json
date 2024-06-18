@@ -17,6 +17,7 @@
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@vueuse/core": "^10.10.0",
     "filesize": "^10.1.2",
+    "humanize-duration": "^3.32.1",
     "markdown-it": "^14.1.0",
     "markdown-it-replace-link": "^1.2.1",
     "notivue": "^2.4.4",
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.10.3",
+    "@types/humanize-duration": "^3.27.4",
     "@tailwindcss/typography": "^0.5.13",
     "@tsconfig/node20": "^20.1.4",
     "@types/markdown-it": "^14.1.1",

@@ -17,7 +17,7 @@ withDefaults(
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="w-full overflow-hidden">
     <div class="relative h-1 bg-opacity-30" :class="COLORS[color]" role="progressbar">
       <template v-if="value === undefined">
         <div

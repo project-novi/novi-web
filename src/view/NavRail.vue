@@ -5,7 +5,7 @@ import { useUIState } from '@/ui';
 
 import NavRailItem from './NavRailItem.vue';
 
-import { mdiCog, mdiCompass, mdiImageSearch, mdiLogin } from '@mdi/js';
+import { mdiCog, mdiCompass, mdiImageSearch, mdiInvoiceList, mdiLogin } from '@mdi/js';
 
 const route = useRoute();
 const router = useRouter();
@@ -47,11 +47,18 @@ function goto(route: RouteLocationRaw) {
             @click="goto({ name: 'home' })"
           />
           <NavRailItem
+            :icon="mdiInvoiceList"
+            name="任务列表"
+            :active="route.name === 'task'"
+            @click="goto({ name: 'task' })"
+          />
+          <NavRailItem
             :icon="mdiImageSearch"
             name="按图搜索"
             :active="route.name === 'image-search'"
             @click="goto({ name: 'image-search' })"
           />
+
         </div>
 
         <div class="flex flex-col gap-1">

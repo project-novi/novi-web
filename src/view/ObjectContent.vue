@@ -62,5 +62,5 @@ const size = computed(() => object.value?.size);
       <MIcon :icon="mdiLink" class="m-auto" />
     </RouterLink>
   </div>
-  <MSpinner v-else class="w-12" />
+  <MSpinner v-else class="w-12 m-8" />
 </template>

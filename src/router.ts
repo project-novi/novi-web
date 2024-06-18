@@ -34,13 +34,23 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('@/page/LoginPage.vue')
+    },
+    {
+      path: '/task',
+      name: 'tasks',
+      component: () => import('@/page/TasksPage.vue')
+    },
+    {
+      path: '/task/:id',
+      name: 'task',
+      component: () => import('@/page/TaskPage.vue')
     }
   ],
   scrollBehavior(to, _from, savedPosition) {
     return {
       left: window.scrollX,
       top: window.scrollY
-    }
+    };
   }
 });
 
