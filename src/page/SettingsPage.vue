@@ -7,13 +7,12 @@ import { RATING_MAP } from '@/misc';
 import { usePref } from '@/pref';
 import { useUIState } from '@/ui';
 
-import { MButton, MCheckbox, MInput, MSelect } from '@/m';
+import { MButton, MCheckbox, MInput, MItem, MSelect } from '@/m';
 
 import InputWithCheck from '@/view/InputWithCheck.vue';
 
 import { mdiAlphaEBox, mdiFanOff, mdiFilter } from '@mdi/js';
 
-import Item from './settings/Item.vue';
 import Section from './settings/Section.vue';
 
 const IPFS_SVG =
@@ -43,7 +42,7 @@ const editingIpfsGateway = ref<string | null>(null);
     <div class="p-4">
       <div class="mx-auto flex max-w-xl flex-col gap-4">
         <Section title="搜索">
-          <Item
+          <MItem
             :icon="mdiAlphaEBox"
             title="敏感内容阈值"
             description="对评级高于阈值的内容缩略图打码"
@@ -57,9 +56,9 @@ const editingIpfsGateway = ref<string | null>(null);
                 {{ value === 'n' ? '不限制' : RATING_MAP[value] }}
               </p>
             </MSelect>
-          </Item>
+          </MItem>
 
-          <Item :icon="mdiFilter" title="额外过滤">
+          <MItem :icon="mdiFilter" title="额外过滤">
             <MButton
               color="flat"
               :class="{ 'text-red-500': editingFilter !== null }"
@@ -89,11 +88,11 @@ const editingIpfsGateway = ref<string | null>(null);
                 />
               </div>
             </template>
-          </Item>
+          </MItem>
         </Section>
 
         <Section title="文件">
-          <Item :icon="IPFS_SVG" title="使用自定义 IPFS 网关">
+          <MItem :icon="IPFS_SVG" title="使用自定义 IPFS 网关">
             <MCheckbox v-model="edit.useCustomIpfs" />
             <template #extra>
               <div
@@ -111,13 +110,13 @@ const editingIpfsGateway = ref<string | null>(null);
                 />
               </div>
             </template>
-          </Item>
+          </MItem>
         </Section>
 
         <Section title="界面">
-          <Item :icon="mdiFanOff" title="禁用动画" description="禁用动画以减少性能损耗">
+          <MItem :icon="mdiFanOff" title="禁用动画" description="禁用动画以减少性能损耗">
             <MCheckbox v-model="edit.disableAnimation" />
-          </Item>
+          </MItem>
         </Section>
       </div>
     </div>
@@ -131,7 +130,7 @@ const editingIpfsGateway = ref<string | null>(null);
       }"
     >
       <div
-        class="mx-auto flex h-full w-full max-w-lg items-center rounded-sm bg-gray-700 p-4 shadow-xl"
+        class="mx-auto flex h-full w-full max-w-lg MItems-center rounded-sm bg-gray-700 p-4 shadow-xl"
       >
         <p class="text-sm">设置已发生更改</p>
         <MButton color="flat" class="-mr-2 ml-auto" @click="save">保存</MButton>

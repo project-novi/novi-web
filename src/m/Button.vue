@@ -9,7 +9,7 @@ const COLORS = {
   blue: 'bg-blue-600 hover:bg-blue-700',
   yellow: 'bg-yellow-600 hover:bg-yellow-700',
   pink: 'bg-pink-600 hover:bg-pink-700',
-  flat: 'bg-transparent hover:bg-white/10 '
+  flat: 'bg-transparent hover:bg-white/10 text-indigo-400 '
 };
 
 withDefaults(

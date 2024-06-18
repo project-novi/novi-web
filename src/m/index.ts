@@ -4,6 +4,7 @@ import MDialog from './Dialog.vue';
 import MDropdown from './Dropdown.vue';
 import MIcon from './Icon.vue';
 import MInput from './Input.vue';
+import MItem from './Item.vue';
 import MProgress from './Progress.vue';
 import MSelect from './Select.vue';
 import MSpinner from './Spinner.vue';
@@ -16,6 +17,7 @@ export {
   MDropdown,
   MIcon,
   MInput,
+  MItem,
   MProgress,
   MSelect,
   MSpinner,
