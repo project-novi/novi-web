@@ -172,7 +172,7 @@ function addProperty() {
     </table>
   </div>
 
-  <div class="flex justify-end gap-2 items-center">
+  <div class="flex justify-end gap-2 items-center mt-2">
     <MButton v-if="!editing && !saving" color="flat" @click="startEdit">编辑</MButton>
     <template v-else>
       <MButton color="red" :disabled="saving" @click="cancelEdit">取消</MButton>
