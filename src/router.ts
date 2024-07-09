@@ -44,6 +44,11 @@ const router = createRouter({
       path: '/task/:id',
       name: 'task',
       component: () => import('@/page/TaskPage.vue')
+    },
+    {
+      path: '/image-search',
+      name: 'image-search',
+      component: () => import('@/page/ImageSearchPage.vue')
     }
   ],
   scrollBehavior(to, _from, savedPosition) {

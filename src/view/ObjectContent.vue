@@ -57,7 +57,7 @@ const size = computed(() => object.value?.size);
       v-if="depth > 0"
       :to="{ name: 'object', params: { id: objectId } }"
       target="_blank"
-      class="absolute hidden right-4 top-4 group-hover:flex size-8 rounded-full bg-black bg-opacity-20 outline-none hover:bg-opacity-40"
+      class="absolute hidden right-4 top-4 group-hover:flex size-8 rounded-full text-white bg-black bg-opacity-20 outline-none hover:bg-opacity-40"
     >
       <MIcon :icon="mdiLink" class="m-auto" />
     </RouterLink>
