@@ -69,6 +69,7 @@ const { data: content } = useCallFunction(
   'markdown.render',
   { id: props.objectId },
   {
+    toast: true,
     map(res) {
       const raw = res as Rendered;
       let rawContent = md.parse(raw.content, {});

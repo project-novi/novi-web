@@ -104,6 +104,7 @@ function scrape() {
     {
       loading: scraping,
       onSuccess() {
+        newObjectDialog.value?.close();
         push.success('任务已创建');
         router.push({ name: 'tasks' });
       },
