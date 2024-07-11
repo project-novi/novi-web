@@ -13,7 +13,6 @@ const dialog = ref<HTMLDialogElement>();
 
 defineExpose({
   open() {
-    console.log(dialog.value);
     dialog.value!.showModal();
   },
   close() {

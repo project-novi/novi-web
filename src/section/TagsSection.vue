@@ -3,9 +3,9 @@ import { inject, nextTick, ref, watch } from 'vue';
 
 import { push } from 'notivue';
 
-import { fetchApi, loadingGuard } from '@/misc';
 import type { IRawNoviObject } from '@/model';
 import { type INoviObject } from '@/object';
+import { useFetch } from '@/query';
 import { openSectionKey, useHotKey } from '@/ui';
 
 import { MButton } from '@/m';
@@ -70,19 +70,22 @@ function saveEdit() {
   addTag();
   let tags: Record<string, null> = {};
   for (let tag of display.value) tags[tag] = null;
-  fetchApi(
+  useFetch(
     `/objects/${props.object.id}`,
     {
       method: 'PUT',
       query: { scopes: '' },
       json: tags
     },
-    (raw: IRawNoviObject) => {
-      props.object.assign(raw);
-      push.success('已保存');
-      editing.value = false;
-    },
-    loadingGuard(saving)
+    {
+      loading: saving,
+      toast: true,
+      map(raw) {
+        props.object.assign(raw as IRawNoviObject);
+        push.success('已保存');
+        editing.value = false;
+      }
+    }
   );
 }
 

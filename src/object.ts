@@ -1,7 +1,7 @@
 import { type Ref, ref } from 'vue';
 
-import { fetchApi } from './misc';
 import { type IRawNoviObject, type IRawPartialNoviObject } from './model';
+import { fetchApi } from './query';
 
 const EXPIRE_TIME = 1000 * 30;
 

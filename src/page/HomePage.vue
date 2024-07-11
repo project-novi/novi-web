@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { type Ref, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { push } from 'notivue';
 
-import { callFunction, fetchApi, loadingGuard } from '@/misc';
 import { type IRawNoviObject } from '@/model';
 import { type INoviObject, NoviObject } from '@/object';
 import { usePref } from '@/pref';
+import { useCallFunction, useFetch } from '@/query';
 import { SearchState, useEventListener, useHotKey, useUIState } from '@/ui';
 
 import { MButton, MDialog, MIcon, MInput } from '@/m';
@@ -23,13 +23,13 @@ const router = useRouter();
 const ui = useUIState();
 
 const objects = ref<INoviObject[]>();
-let abort: AbortController | null = null;
+let abort: (() => void) | null = null,
+  loading: Ref<boolean> | null = null;
 let possiblyMore = true,
   currentFilter: string | null = null;
 function fetchObjects(filter: string, append: boolean = false) {
   currentFilter = filter;
-  abort?.abort();
-  abort = new AbortController();
+  abort?.();
 
   let query: Record<string, string> = {
     filter: pref.extraFilter + ' ' + filter,
@@ -41,32 +41,34 @@ function fetchObjects(filter: string, append: boolean = false) {
     query['created_before'] = String(new Date(new Date(last.created).getTime() - 1).toISOString());
   }
   if (!append) objects.value = undefined;
-  fetchApi(
+  let handle: number | undefined = undefined;
+  ({ abort, loading } = useFetch(
     '/objects',
-    { query, signal: abort.signal },
-    (res) => {
-      abort = null;
-      const objs = res.map((obj: IRawNoviObject) => NoviObject.fromRaw(obj) as INoviObject);
-      possiblyMore = !!objs.length;
-      if (append) objects.value = objects.value?.concat(objs);
-      else objects.value = objs;
-    },
-    async (p) => {
-      const handle = setTimeout(() => {
-        ui.searchState = SearchState.Searching;
-      }, 200);
-      try {
-        await p;
+    { query },
+    {
+      abortable: true,
+      toast: true,
+      map: (res) => {
+        const objs = (res as IRawNoviObject[]).map((obj) => NoviObject.fromRaw(obj) as INoviObject);
+        possiblyMore = !!objs.length;
+        if (append) objects.value = objects.value?.concat(objs);
+        else objects.value = objs;
+      },
+      onStart() {
+        handle = setTimeout(() => {
+          ui.searchState = SearchState.Searching;
+        }, 200);
+      },
+      onSuccess() {
         clearTimeout(handle);
         ui.searchState = SearchState.Idle;
-      } catch (e) {
+      },
+      onError() {
         clearTimeout(handle);
-        if (!(e instanceof DOMException && e.name === 'AbortError'))
-          ui.searchState = SearchState.Error;
-        throw e;
+        ui.searchState = SearchState.Error;
       }
     }
-  );
+  ));
 }
 
 fetchObjects(String(route.query?.['q'] ?? ''));
@@ -85,7 +87,7 @@ useEventListener(
     if (
       possiblyMore &&
       window.scrollY + window.innerHeight + 200 >= document.body.scrollHeight &&
-      !abort
+      !loading?.value
     )
       fetchObjects(currentFilter || '', true);
   },
@@ -96,14 +98,16 @@ const newObjectDialog = ref<typeof MDialog>();
 const newObjectUrl = ref(''),
   scraping = ref(false);
 function scrape() {
-  callFunction(
+  useCallFunction(
     'task.call',
     { name: 'scrape', arguments: { url: newObjectUrl.value } },
-    () => {
-      push.success('任务已创建');
-      router.push({ name: 'tasks' });
-    },
-    loadingGuard(scraping)
+    {
+      loading: scraping,
+      onSuccess() {
+        push.success('任务已创建');
+        router.push({ name: 'tasks' });
+      },
+    }
   );
 }
 useHotKey('n', () => newObjectDialog.value?.open());

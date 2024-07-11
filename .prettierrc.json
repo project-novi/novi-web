@@ -9,7 +9,7 @@
   "importOrder": [
     "^vue(.*)$",
     "^notivue$",
-    "^@/(object|ui|misc|model|pref|router)$",
+    "^@/(object|ui|misc|model|pref|router|query)$",
     "^@/page/(.*)$",
     "^@/m$",
     "^@/view/(.*)$",

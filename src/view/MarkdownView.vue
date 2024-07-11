@@ -5,9 +5,9 @@ import type { Token } from 'markdown-it/index.js';
 
 import { inject, provide, ref } from 'vue';
 
-import { callFunction } from '@/misc';
 import type { IRawPartialNoviObject } from '@/model';
 import { NoviObject } from '@/object';
+import { useCallFunction } from '@/query';
 import { compactModeKey, depthKey } from '@/ui';
 
 import ObjectContent from '@/view/ObjectContent.vue';
@@ -65,31 +65,36 @@ provide(depthKey, depth + 1);
 
 const compact = inject(compactModeKey, ref(false));
 
-const content = ref<(string | ObjectId)[]>();
-callFunction('markdown.render', { id: props.objectId }, (res) => {
-  const raw = res as Rendered;
-  let rawContent = md.parse(raw.content, {});
-  if (depth >= 1) rawContent = rawContent.slice(0, 30);
-  let buffer: Token[] = [];
-  let c = [];
-  function flush() {
-    if (buffer.length > 0) {
-      c.push(md.renderer.render(buffer, mdOptions, {}));
-      buffer = [];
-    }
-  }
-  for (let token of rawContent) {
-    if (token.type === 'object') {
+const { data: content } = useCallFunction(
+  'markdown.render',
+  { id: props.objectId },
+  {
+    map(res) {
+      const raw = res as Rendered;
+      let rawContent = md.parse(raw.content, {});
+      if (depth >= 1) rawContent = rawContent.slice(0, 30);
+      let buffer: Token[] = [];
+      let result = [];
+      function flush() {
+        if (buffer.length > 0) {
+          result.push(md.renderer.render(buffer, mdOptions, {}));
+          buffer = [];
+        }
+      }
+      for (let token of rawContent) {
+        if (token.type === 'object') {
+          flush();
+          result.push(new ObjectId(token.attrs![0][1]));
+        } else {
+          buffer.push(token);
+        }
+      }
       flush();
-      c.push(new ObjectId(token.attrs![0][1]));
-    } else {
-      buffer.push(token);
+      for (let obj of raw.objects) NoviObject.fromRaw(obj);
+      return result;
     }
   }
-  flush();
-  for (let obj of raw.objects) NoviObject.fromRaw(obj);
-  content.value = c;
-});
+);
 </script>
 
 <template>

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+
 import { push } from 'notivue';
 
-import { fetchApi, loadingGuard } from '@/misc';
+import { useFetch } from '@/query';
 
 import { MButton } from '@/m';
+
 import IconInput from '@/view/IconInput.vue';
 
 import { mdiAccount, mdiLock } from '@mdi/js';
@@ -17,7 +19,7 @@ const password = ref('');
 const loading = ref(false);
 function login() {
   if (loading.value) return;
-  fetchApi(
+  useFetch(
     '/login',
     {
       method: 'POST',
@@ -26,11 +28,15 @@ function login() {
         password: password.value
       }
     },
-    () => {
-      push.success('登录成功');
-      router.back();
-    },
-    loadingGuard(loading)
+    {
+      loading,
+      toast: true,
+      retryable: false,
+      onSuccess() {
+        push.success('登录成功');
+        router.back();
+      }
+    }
   );
 }
 </script>

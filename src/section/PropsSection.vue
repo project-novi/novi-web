@@ -3,9 +3,9 @@ import { inject, nextTick, ref, watch } from 'vue';
 
 import { push } from 'notivue';
 
-import { fetchApi, loadingGuard } from '@/misc';
 import type { IRawNoviObject } from '@/model';
 import { type INoviObject, NoviObject } from '@/object';
+import { useFetch } from '@/query';
 import { openSectionKey, useHotKey } from '@/ui';
 
 import { MButton, MIcon, MInput } from '@/m';
@@ -69,18 +69,21 @@ function saveEdit() {
     if (!tag.startsWith('@')) tags[tag] = value;
   for (let [prop, value] of display.value) tags['@' + prop] = value;
 
-  fetchApi(
+  useFetch(
     `/objects/${props.object.id}`,
     {
       method: 'PUT',
       query: { scopes: '*' },
       json: tags
     },
-    (raw: IRawNoviObject) => {
-      NoviObject.fromRaw(raw);
-      push.success('已保存');
-    },
-    loadingGuard(saving)
+    {
+      loading: saving,
+      toast: true,
+      map(raw) {
+        NoviObject.fromRaw(raw as IRawNoviObject);
+        push.success('已保存');
+      }
+    }
   );
 }
 

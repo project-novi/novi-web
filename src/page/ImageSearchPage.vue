@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { fetchApi } from '@/misc';
 import type { IRawNoviObject } from '@/model';
 import { type IPartialNoviObject, NoviObject } from '@/object';
+import { fetchApi, useQuery } from '@/query';
 
 import { MButton } from '@/m';
 
@@ -13,6 +13,7 @@ import PageContent from '@/view/PageContent.vue';
 
 const file = ref<File>();
 const objects = ref<IPartialNoviObject[]>();
+const loading = ref(false);
 
 async function search() {
   let form = new FormData();
@@ -36,6 +37,12 @@ async function search() {
   ).result;
   objects.value = results.map((obj: IRawNoviObject) => NoviObject.fromRaw(obj));
 }
+function postSearch() {
+  useQuery(search, {
+    loading,
+    toast: true
+  });
+}
 </script>
 
 <template>
@@ -43,6 +50,7 @@ async function search() {
     <FileInput v-model="file" accept="image/*" />
     <div v-if="file" class="flex justify-end mt-2 gap-2">
       <MButton
+        :disabled="loading"
         color="red"
         @click="
           () => {
@@ -50,9 +58,12 @@ async function search() {
             objects = undefined;
           }
         "
-        >取消</MButton
       >
-      <MButton color="green" @click="search">搜索</MButton>
+        取消
+      </MButton>
+      <MButton :disabled="loading" :loading="loading" color="green" @click="postSearch">
+        搜索
+      </MButton>
     </div>
     <ObjectMasonry v-if="objects !== undefined" :objects="objects" class="mt-4"></ObjectMasonry>
   </PageContent>

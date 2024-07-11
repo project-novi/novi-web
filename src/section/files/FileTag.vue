@@ -3,8 +3,8 @@ import { filesize } from 'filesize';
 
 import { computed, ref, watch } from 'vue';
 
-import { errorHandler } from '@/misc';
 import { type INoviObject } from '@/object';
+import { useQuery } from '@/query';
 
 import { MSpinner } from '@/m';
 
@@ -16,44 +16,39 @@ const props = defineProps<{
 
 const url = computed(() => props.object.url(props.variant));
 
-const fileSize = ref<string>();
+async function fetchSize(url: string, signal?: AbortSignal) {
+  let resp = await fetch(url, { method: 'HEAD', signal });
+  let size = resp.headers.get('content-length')!;
+  try {
+    return filesize(parseInt(size));
+  } catch (e) {
+    // wierd... let's try reading the body
+    resp = await fetch(url, {
+      method: 'GET',
+      signal: abort?.signal,
+      headers: {
+        'Content-Range': 'bytes=0-8192'
+      }
+    });
+    try {
+      let size = parseInt(resp.headers.get('content-length')!);
+      if (size < 8192) return filesize(size);
+    } catch (e) {}
+    // Okay. I give up.
+    return '';
+  }
+}
 
 let abort: AbortController | null = null;
+const fileSize = ref<string>();
 watch(
   url,
   (url) => {
     abort?.abort();
     abort = new AbortController();
-    fileSize.value = undefined;
-    fetch(url, { method: 'HEAD', signal: abort.signal })
-      .then((resp) => {
-        let size = resp.headers.get('content-length')!;
-        try {
-          fileSize.value = filesize(parseInt(size));
-        } catch (e) {
-          // wierd... let's try reading the body
-          fetch(url, {
-            method: 'GET',
-            signal: abort?.signal,
-            headers: {
-              'Content-Range': 'bytes=0-8192'
-            }
-          })
-            .then((resp) => {
-              try {
-                let size = parseInt(resp.headers.get('content-length')!);
-                if (size < 8192) {
-                  fileSize.value = filesize(size);
-                  return;
-                }
-              } catch (e) {}
-              // Okay. I give up.
-              fileSize.value = '';
-            })
-            .catch(errorHandler());
-        }
-      })
-      .catch(errorHandler());
+    useQuery(() => fetchSize(url, abort?.signal), {
+      data: fileSize
+    });
   },
   { immediate: true }
 );
